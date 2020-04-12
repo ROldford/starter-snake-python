@@ -47,7 +47,6 @@ class Battlesnake(object):
         data = cherrypy.request.json
         board = data["board"]
         head = data["you"]["body"][0]
-        print(f"Head: {head['x']}, {head['y']}")
         snakes = board["snakes"]
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
@@ -55,7 +54,9 @@ class Battlesnake(object):
         #     print(f"Checking {direction}")
         #     if self.obstacle_adjacent(head, direction, snakes, board):
         #         possible_moves.remove(direction)
-        possible_moves = [move for move in possible_moves if not self.obstacle_adjacent(head, move, snakes, board)]
+        possible_moves = [move for move in possible_moves
+                          if not self.obstacle_adjacent(
+                                head, move, snakes, board)]
 
         move = random.choice(possible_moves)
 
@@ -77,7 +78,6 @@ class Battlesnake(object):
     def obstacle_adjacent(self, head, direction, snakes, board):
         for snake in snakes:
             for segment in snake["body"]:
-                print(f"Segment: {segment['x']}, {segment['y']}")
                 if self.adjacent(head, direction, segment, board):
                     return True
         return False
@@ -87,22 +87,17 @@ class Battlesnake(object):
         height = board["height"]
         delta_x = segment["x"] - head["x"]
         delta_y = segment["y"] - head["y"]
-        print(f"Delta: {delta_x}, {delta_y}")
         if direction == "up":
             if (delta_x == 0 and delta_y == -1) or head["y"] == 0:
-                print("Should remove up")
                 return True
         elif direction == "down":
             if (delta_x == 0 and delta_y == 1) or head["y"] == height - 1:
-                print("Should remove down")
                 return True
         elif direction == "left":
             if (delta_x == -1 and delta_y == 0) or head["x"] == 0:
-                print("Should remove left")
                 return True
         elif direction == "right":
             if (delta_x == 1 and delta_y == 0) or head["x"] == width - 1:
-                print("Should remove right")
                 return True
         return False
 
