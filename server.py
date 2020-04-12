@@ -1,4 +1,5 @@
 import os
+import random
 
 import cherrypy
 
@@ -44,18 +45,16 @@ class Battlesnake(object):
         # TODO: Use the information in cherrypy.request.json to
         #       decide your next move.
         data = cherrypy.request.json
-        height = data["board"]["height"]
-        width = data["board"]["height"]
-        # Choose a random direction to move in
-        # possible_moves = ["up", "down", "left", "right"]
-        # move = random.choice(possible_moves)
-
+        board = data["board"]
         head = data["you"]["body"][0]
-        print(head)
+        snakes = data["snakes"]
+        # Choose a random direction to move in
+        possible_moves = ["up", "down", "left", "right"]
+        for direction in possible_moves:
+            if self.obstacle_adjacent(head, direction, snakes, board):
+                possible_moves.remove(direction)
 
-        move = "right"
-        if head["x"] == width - 1:
-            move = "up"
+        move = random.choice(possible_moves)
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -69,6 +68,28 @@ class Battlesnake(object):
         # data = cherrypy.request.json
         print("END")
         return "ok"
+
+    # Helper functions
+    def obstacle_adjacent(self, head, direction, snakes, board):
+        for snake in snakes:
+            for segment in snake:
+                if self.adjacent(head, direction, segment, board):
+                    return True
+        return False
+
+    def adjacent(self, head, direction, segment, board):
+        width = board["width"]
+        height = board["height"]
+        delta_x = segment["x"] - head['x']
+        delta_y = segment["y"] - head['y']
+        if direction == "up":
+            return (delta_x == 0 and delta_y == -1) or head["y"] == 0
+        elif direction == "down":
+            return (delta_x == 0 and delta_y == 1) or head["y"] == width - 1
+        elif direction == "left":
+            return (delta_x == -1 and delta_y == 0) or head["x"] == 0
+        elif direction == "left":
+            return (delta_x == -1 and delta_y == 0) or head["x"] == height - 1
 
 
 if __name__ == "__main__":
