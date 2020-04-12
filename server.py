@@ -73,7 +73,7 @@ class Battlesnake(object):
     # Helper functions
     def obstacle_adjacent(self, head, direction, snakes, board):
         for snake in snakes:
-            for segment in snake:
+            for segment in snake["body"]:
                 if self.adjacent(head, direction, segment, board):
                     return True
         return False
@@ -81,8 +81,8 @@ class Battlesnake(object):
     def adjacent(self, head, direction, segment, board):
         width = board["width"]
         height = board["height"]
-        delta_x = segment["x"] - head['x']
-        delta_y = segment["y"] - head['y']
+        delta_x = segment["x"] - head["x"]
+        delta_y = segment["y"] - head["y"]
         if direction == "up":
             return (delta_x == 0 and delta_y == -1) or head["y"] == 0
         elif direction == "down":
