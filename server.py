@@ -52,6 +52,7 @@ class Battlesnake(object):
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         for direction in possible_moves:
+            print(f"Checking {direction}")
             if self.obstacle_adjacent(head, direction, snakes, board):
                 possible_moves.remove(direction)
 
@@ -85,6 +86,7 @@ class Battlesnake(object):
         height = board["height"]
         delta_x = segment["x"] - head["x"]
         delta_y = segment["y"] - head["y"]
+        print(f"Delta: {delta_x}, {delta_y}")
         if direction == "up":
             return (delta_x == 0 and delta_y == -1) or head["y"] == 0
         elif direction == "down":
