@@ -47,6 +47,7 @@ class Battlesnake(object):
         data = cherrypy.request.json
         board = data["board"]
         head = data["you"]["body"][0]
+        print(f"Head: {head['x']}, {head['y']}")
         snakes = board["snakes"]
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
@@ -74,6 +75,7 @@ class Battlesnake(object):
     def obstacle_adjacent(self, head, direction, snakes, board):
         for snake in snakes:
             for segment in snake["body"]:
+                print(f"Head: {segment['x']}, {segment['y']}")
                 if self.adjacent(head, direction, segment, board):
                     return True
         return False
