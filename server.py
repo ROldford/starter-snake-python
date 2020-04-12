@@ -56,6 +56,7 @@ class Battlesnake(object):
 
         move = random.choice(possible_moves)
 
+        print(possible_moves)
         print(f"MOVE: {move}")
         return {"move": move}
 
@@ -88,8 +89,8 @@ class Battlesnake(object):
             return (delta_x == 0 and delta_y == 1) or head["y"] == width - 1
         elif direction == "left":
             return (delta_x == -1 and delta_y == 0) or head["x"] == 0
-        elif direction == "left":
-            return (delta_x == -1 and delta_y == 0) or head["x"] == height - 1
+        elif direction == "right":
+            return (delta_x == 1 and delta_y == 0) or head["x"] == height - 1
 
 
 if __name__ == "__main__":
