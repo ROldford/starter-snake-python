@@ -57,8 +57,10 @@ class Battlesnake(object):
         possible_moves = [move for move in possible_moves
                           if not self.obstacle_adjacent(
                                 head, move, snakes, board)]
-
-        move = random.choice(possible_moves)
+        if possible_moves:
+            move = random.choice(possible_moves)
+        else:
+            move = random.choice(["up", "down", "left", "right"])
 
         print(possible_moves)
         print(f"MOVE: {move}")
