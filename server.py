@@ -88,13 +88,22 @@ class Battlesnake(object):
         delta_y = segment["y"] - head["y"]
         print(f"Delta: {delta_x}, {delta_y}")
         if direction == "up":
-            return (delta_x == 0 and delta_y == -1) or head["y"] == 0
+            if ((delta_x == 0 and delta_y == -1) or head["y"] == 0):
+                print("Should remove up")
+                return True
         elif direction == "down":
-            return (delta_x == 0 and delta_y == 1) or head["y"] == height - 1
+            if ((delta_x == 0 and delta_y == 1) or head["y"] == height - 1):
+                print("Should remove down")
+                return True
         elif direction == "left":
-            return (delta_x == -1 and delta_y == 0) or head["x"] == 0
+            if ((delta_x == -1 and delta_y == 0) or head["x"] == 0):
+                print("Should remove left")
+                return True
         elif direction == "right":
-            return (delta_x == 1 and delta_y == 0) or head["x"] == width - 1
+            if ((delta_x == 1 and delta_y == 0) or head["x"] == width - 1):
+                print("Should remove right")
+                return True
+        return False
 
 
 if __name__ == "__main__":
