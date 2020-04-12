@@ -75,7 +75,7 @@ class Battlesnake(object):
     def obstacle_adjacent(self, head, direction, snakes, board):
         for snake in snakes:
             for segment in snake["body"]:
-                print(f"Head: {segment['x']}, {segment['y']}")
+                print(f"Segment: {segment['x']}, {segment['y']}")
                 if self.adjacent(head, direction, segment, board):
                     return True
         return False
