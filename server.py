@@ -48,6 +48,8 @@ class Battlesnake(object):
         print(head)
 
         move = "right"
+        if (head["x"] = 10) :
+            move = "up"
 
         print(f"MOVE: {move}")
         return {"move": move}
