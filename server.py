@@ -55,7 +55,7 @@ class Battlesnake(object):
         #     print(f"Checking {direction}")
         #     if self.obstacle_adjacent(head, direction, snakes, board):
         #         possible_moves.remove(direction)
-        possible_moves = [move for move in possible_moves if self.obstacle_adjacent(head, move, snakes, board)]
+        possible_moves = [move for move in possible_moves if not self.obstacle_adjacent(head, move, snakes, board)]
 
         move = random.choice(possible_moves)
 
