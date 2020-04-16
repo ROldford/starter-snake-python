@@ -136,7 +136,7 @@ class Battlesnake(object):
         width = board["width"]
         matrix = [i[:] for i in [[1] * width] * height]
         for snake in board["snakes"]:
-            for segment in snake:
+            for segment in snake["body"]:
                 row = segment["y"]
                 col = segment["x"]
                 matrix[row][col] = 0
