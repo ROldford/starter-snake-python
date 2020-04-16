@@ -123,9 +123,11 @@ class Battlesnake(object):
 
     def prioritize_food(self, head, board):
         food = board["food"]
-        return food.sort(key=lambda x: (
+        food.sort(key=lambda x: (
                 abs(x["x"] - head["x"]) + abs(x["y"] - head["y"])
         ))
+        print(food)
+        return food
 
     def hungry(self, me):
         health = me["health"]
