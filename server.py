@@ -2,6 +2,8 @@ import os
 import random
 
 import cherrypy
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
 
 """
 This is a simple Battlesnake server written in Python.
@@ -11,6 +13,8 @@ https://github.com/BattlesnakeOfficial/starter-snake-python/README.md
 
 
 class Battlesnake(object):
+    _HUNGER_LEVEL = 50
+
     @cherrypy.expose
     def index(self):
         # If you open your snake URL in a browser you should see this message.
@@ -46,19 +50,16 @@ class Battlesnake(object):
         #       decide your next move.
         data = cherrypy.request.json
         board = data["board"]
+        me = data["you"]
         head = data["you"]["body"][0]
-        snakes = board["snakes"]
-        # Choose a random direction to move in
-        possible_moves = ["up", "down", "left", "right"]
-        possible_moves = [move for move in possible_moves
-                          if not self.obstacle_adjacent(
-                                head, move, snakes, board)]
-        if possible_moves:
-            move = random.choice(possible_moves)
-        else:
-            move = random.choice(["up", "down", "left", "right"])
+        # snakes = board["snakes"]
+        food = self.prioritize_food(head, board)
 
-        print(possible_moves)
+        if self.hungry(me):
+            move = self.hunt_food(board, food, head)
+        else:
+            move = self.random_move(head, board)
+
         print(f"MOVE: {move}")
         return {"move": move}
 
@@ -73,7 +74,27 @@ class Battlesnake(object):
         return "ok"
 
     # Helper functions
-    def obstacle_adjacent(self, head, direction, snakes, board):
+    def hunt_food(self, board, food, head):
+        grid = self.generate_grid(board)
+        start = grid.node(head["x"], head["y"])
+        closest_food = food[0]
+        end = grid.node(closest_food["x"], closest_food["y"])
+        finder = AStarFinder()
+        path = finder.find_path(start, end, grid)
+        move = self.get_next_move_from_path(path)
+        return move
+
+    def random_move(self, head, board):
+        possible_moves = ["up", "down", "left", "right"]
+        possible_moves = [move for move in possible_moves
+                          if not self.obstacle_adjacent(head, move, board)]
+        if possible_moves:
+            return random.choice(possible_moves)
+        else:
+            return random.choice(["up", "down", "left", "right"])
+
+    def obstacle_adjacent(self, head, direction, board):
+        snakes = board["snakes"]
         for snake in snakes:
             for segment in snake["body"]:
                 if self.adjacent(head, direction, segment, board):
@@ -93,6 +114,43 @@ class Battlesnake(object):
             return (delta_x == -1 and delta_y == 0) or head["x"] == 0
         elif direction == "right":
             return (delta_x == 1 and delta_y == 0) or head["x"] == width - 1
+
+    def prioritize_food(self, head, board):
+        food = board["food"]
+        return food.sort(key=lambda x: (
+                abs(x["x"] - head["x"]) + abs(x["y"] - head["y"])
+        ))
+
+    def hungry(self, me):
+        health = me["health"]
+        return health < self._HUNGER_LEVEL
+
+    def generate_grid(self, board):
+        height = board["height"]
+        width = board["width"]
+        matrix = [i[:] for i in [[1] * width] * height]
+        for snake in board["snakes"]:
+            for segment in snake:
+                row = segment["y"]
+                col = segment["x"]
+                matrix[row][col] = 0
+        return Grid(matrix=matrix)
+
+    def get_next_move_from_path(self, path):
+        current_position = path[0]
+        next_position = path[1]
+        delta_x = next_position["x"] - current_position["x"]
+        delta_y = next_position["y"] - current_position["y"]
+        if delta_x == 0:
+            if delta_y > 0:
+                return "down"
+            else:
+                return "up"
+        else:
+            if delta_x > 0:
+                return "right"
+            else:
+                return "left"
 
 
 if __name__ == "__main__":
