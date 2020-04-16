@@ -56,8 +56,10 @@ class Battlesnake(object):
         food = self.prioritize_food(head, board)
 
         if self.hungry(me):
+            print("Hunting food")
             move = self.hunt_food(board, food, head)
         else:
+            print("Random Move")
             move = self.random_move(head, board)
 
         print(f"MOVE: {move}")
@@ -82,12 +84,16 @@ class Battlesnake(object):
         finder = AStarFinder()
         path = finder.find_path(start, end, grid)
         move = self.get_next_move_from_path(path)
+        print(f"Start: {head['x']}, {head['y']}; "
+              f"End: {closest_food['x']}, {closest_food['y']}")
+        print(f"Path: {path}")
         return move
 
     def random_move(self, head, board):
         possible_moves = ["up", "down", "left", "right"]
         possible_moves = [move for move in possible_moves
                           if not self.obstacle_adjacent(head, move, board)]
+        print(f"Possible moves: {possible_moves}")
         if possible_moves:
             return random.choice(possible_moves)
         else:
